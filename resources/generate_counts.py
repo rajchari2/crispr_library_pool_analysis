@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 
 from collections import defaultdict
 
-def generate_library_output(sam_file, reference_file, strict_count_file, sra_count_file, bar_plot_file_sra, bar_plot_file_strict, mapping_summary_file):
+def generate_library_output(sam_file, reference_file, strict_count_file, sra_count_file, bar_plot_file_strict, bar_plot_file_sra, mapping_summary_file):
 	# global variables
 	reference_db = defaultdict(str)
 	spacer_db = defaultdict(str)
@@ -170,11 +170,11 @@ def main(argv):
 	parser.add_argument('-r','--reference_file',type=argparse.FileType('r'),required=True)
 	parser.add_argument('-s','--strict_count_file',type=argparse.FileType('w'),required=True)
 	parser.add_argument('-b','--sra_count_file',type=argparse.FileType('w'),required=True)
-	parser.add_argument('-g','--bar_plot_file_sra',type=argparse.FileType('w'),required=True)
-	parser.add_argument('-f','--bar_plot_file_strict',type=argparse.FileType('w'),required=True)
+	parser.add_argument('-g','--bar_plot_file_strict',type=argparse.FileType('w'),required=True)
+	parser.add_argument('-f','--bar_plot_file_sra',type=argparse.FileType('w'),required=True)
 	parser.add_argument('-m','--mapping_summary_file',type=argparse.FileType('w'),required=True)
 	opts = parser.parse_args(argv)
-	generate_library_output(opts.sam_file, opts.reference_file, opts.strict_count_file, opts.sra_count_file, opts.bar_plot_file_sra, opts.bar_plot_file_strict, opts.mapping_summary_file)
+	generate_library_output(opts.sam_file, opts.reference_file, opts.strict_count_file, opts.sra_count_file, opts.bar_plot_file_strict, opts.bar_plot_file_sra, opts.mapping_summary_file)
  
 if __name__ == '__main__':
 	main(sys.argv[1:])
