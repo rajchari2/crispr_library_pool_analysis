@@ -73,22 +73,28 @@ rule generate_counts:
 		sam_file = rules.bwa_mem.output.sam,
 		reference_file = get_reference
 	output:
-		strict_count_file = 'final_output/{sample}_strict_match_counts.tab',
-		sra_count_file = 'final_output/{sample}_sra_counts.tab',
+		strict_count_file = 'output/{sample}_strict_match_counts.csv',
+		sra_count_file = 'output/{sample}_sra_counts.csv',
 		bar_plot_file_strict = 'final_output/{sample}_library_representation_strict.png',
 		bar_plot_file_sra = 'final_output/{sample}_library_representation_sra.png',
-		mapping_summary_file = 'output/{sample}_mapping_summary.tab'
+		mapping_summary_file = 'output/{sample}_mapping_summary.csv'
 	shell:
 		'python resources/generate_counts.py -a {input.sam_file} -r {input.reference_file} -s {output.strict_count_file} -b {output.sra_count_file} -g {output.bar_plot_file_strict} -f {output.bar_plot_file_sra} -m {output.mapping_summary_file}'
 
 rule aggregate_mapping_stats:
 	input:
-		summary_list = sorted(expand(rules.generate_counts.output.mapping_summary_file,sample=sample_list))
+		summary_list = sorted(expand(rules.generate_counts.output.mapping_summary_file,sample=sample_list)),
+		strict_files = sorted(expand(rules.generate_counts.output.strict_count_file,sample=sample_list)),
+		sra_files = sorted(expand(rules.generate_counts.output.sra_count_file,sample=sample_list))
 	output:
-		aggregate_file = 'final_output/' + ngs_run + '_library_mapping_stats.tab'
+		aggregate_file = 'final_output/' + ngs_run + '_library_mapping_stats.csv',
+		strict_matrix = 'final_output/' + ngs_run + '_count_matrix_strict.csv',
+		sra_matrix = 'final_output/' + ngs_run + '_count_matrix_sra.csv'
 	shell:
-		'python resources/aggregate_stats.py -i {input.summary_list} -o {output.aggregate_file}'
+		'python resources/aggregate_stats.py -i {input.summary_list} -a {input.strict_files} -b {input.sra_files}  -m {output.aggregate_file} -s {output.strict_matrix} -c {output.sra_matrix}'
 
 rule process_libraries:
 	input:
-		report_file = rules.aggregate_mapping_stats.output.aggregate_file
+		report_file = rules.aggregate_mapping_stats.output.aggregate_file,
+		strict_matrix_file = rules.aggregate_mapping_stats.output.strict_matrix,
+		sra_matrix_file = rules.aggregate_mapping_stats.output.sra_matrix
