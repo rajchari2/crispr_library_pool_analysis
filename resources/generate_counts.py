@@ -101,8 +101,8 @@ def generate_library_output(sam_file, reference_file, strict_count_file, sra_cou
 			sra_counts_db[spacer_id] = 0
 
 		# write to file
-		strict_count_file.write(spacer_id + '\t' + gene_symbol + '\t' + str(strict_count) + '\n')
-		sra_count_file.write(spacer_id + '\t' + gene_symbol + '\t' + str(sra_count) + '\n')
+		strict_count_file.write(spacer_id + ',' + gene_symbol + ',' + str(strict_count) + '\n')
+		sra_count_file.write(spacer_id + ',' + gene_symbol + ',' + str(sra_count) + '\n')
 
 		# add to zero count
 		if strict_count==0:
@@ -114,10 +114,10 @@ def generate_library_output(sam_file, reference_file, strict_count_file, sra_cou
 	total_spacers = len(reference_db.keys())
 
 	# write mapping summary
-	mapping_summary_file.write('Sample\tTotal_Reads\tMapped_Strict\tMapped_SRA\n')
+	mapping_summary_file.write('Sample,Total_Reads,Mapped_Strict,Mapped_SRA\n')
 	sample_name = os.path.basename(sam_file.name)
 	sample_name = sample_name.replace('_bwamem.sam','')
-	mapping_summary_file.write(sample_name + '\t' + str(total_reads) + '\t' + str(total_strict) + '\t' + str(total_sra) + '\n')
+	mapping_summary_file.write(sample_name + ',' + str(total_reads) + ',' + str(total_strict) + ',' + str(total_sra) + '\n')
 
 	# plot the graphs
 	plot_data(strict_counts_db, bar_plot_file_strict, sample_name, num_zero_strict, total_reads, total_strict, 'strict')
