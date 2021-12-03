@@ -34,12 +34,15 @@ def generate_library_output(sam_file, reference_file, strict_count_file, sra_cou
 	# go through reference file
 	for record in SeqIO.parse(reference_file,'fasta'):
 		name = str(record.id)
-		spacer = str(record.seq)[25:45]
+		# find first CACCG
+		sequence = str(record.seq)
+		index = sequence.find('CACCG')
+		spacer = sequence[index+5:index+25]
 		reference_db[name] = spacer
 		if spacer not in spacer_db:
 			spacer_db[spacer] = name
 		else:
-			print('Duplicate spacer!')
+			print('Duplicate spacer!' + spacer)
 	reference_file.close()
 
 	# go through SAM file
